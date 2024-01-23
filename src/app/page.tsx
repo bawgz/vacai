@@ -3,32 +3,34 @@ import React, { useState } from "react";
 
 export default function Home() {
 
-  const [url, setUrl] = useState("");
-  const [file, setFile] = useState<any>(null);
+  const [files, setFiles] = useState<FileList | null>(null);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-    let formData = new FormData();
-    formData.append("file", file?.data);
+    let formData = packFiles(files!);
+
     const response = await fetch("/api/training", {
       method: "POST",
       body: formData,
     });
     const responseWithBody = await response.json();
-    if (response) setUrl(responseWithBody.publicUrl);
+
+    console.log(responseWithBody);
   };
-  const handleFileChange = (e: any) => {
-    const img = {
-      preview: URL.createObjectURL(e.target.files[0]),
-      data: e.target.files[0],
-    };
-    setFile(img);
-  };
+
+  function packFiles(files: FileList): FormData {
+    const data = new FormData();
+
+    [...files].forEach((file, i) => {
+      data.append(`file-${i}`, file, file.name)
+    })
+    return data
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <form onSubmit={handleSubmit}>
-        <input type="file" name="file" onChange={handleFileChange}></input>
+        <input type="file" accept="image/*" multiple name="file" onChange={(e) => setFiles(e.target.files || null)} />
         <button type="submit">Submit</button>
       </form>
     </main>

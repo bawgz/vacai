@@ -1,7 +1,10 @@
 import Replicate from "replicate";
 import { Storage } from "@google-cloud/storage";
+import JSZip from "jszip";
 
 const replicate = new Replicate();
+
+const zip = new JSZip();
 
 if (!process.env.GCP_CREDENTIALS) {
   throw new Error('GCP_CREDENTIALS not set.');
@@ -24,23 +27,26 @@ const storage = new Storage(
 export async function POST(request: Request) {
 
   const formData = await request.formData();
-  const file = formData.get('file') as File | null;
 
-  console.log('file', file)
+  console.log('formData', formData);
 
-  if (!file) {
-    return Response.json({ error: 'No file uploaded' }, { status: 400 });
+  for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+    const file = value as File;
+    zip.file(file.name, Buffer.from(await file.arrayBuffer()))
   }
 
+  const zipResult = await zip.generateAsync({ type: "arraybuffer" });
+
+  console.log('zipResult', zipResult);
+
+  const trainingId = crypto.randomUUID();
+
   const response = await storage.bucket('vacai')
-    .file(file.name)
-    .save(Buffer.from(await file.arrayBuffer()));
+    .file(`${trainingId}.zip`)
+    .save(Buffer.from(zipResult));
 
   console.log(response);
-
-
-  // const uploadResponse = await storage.bucket('vacai').upload(filePath);
-
 
   return Response.json({ message: 'Hello world' })
 }
