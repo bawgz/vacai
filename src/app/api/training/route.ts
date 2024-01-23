@@ -4,7 +4,11 @@ import { Storage } from "@google-cloud/storage";
 const replicate = new Replicate();
 const storage = new Storage({ projectId: 'vacai-412020' });
 
-export async function POST({ shouldSkipTraining = false }) {
+export async function POST(request: Request) {
+
+  const requestBody = await request.json();
+  console.log(requestBody);
+
   const [buckets] = await storage.getBuckets();
   console.log('Buckets:');
 
@@ -14,7 +18,7 @@ export async function POST({ shouldSkipTraining = false }) {
 
   console.log('Listed all storage buckets.');
 
-  if (shouldSkipTraining) {
+  if (requestBody['shouldSkipTraining']) {
     return Response.json({
       message: 'Training skipped.'
     })
