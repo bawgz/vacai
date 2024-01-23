@@ -1,16 +1,36 @@
 'use client'
+import React, { useState } from "react";
 
 export default function Home() {
 
-  async function startTraining(shouldSkipTraining: boolean) {
-    const result = await (await fetch('/api/training', { method: "POST", body: JSON.stringify({ shouldSkipTraining }) })).json();
-    console.log(result);
-  }
+  const [url, setUrl] = useState("");
+  const [file, setFile] = useState<any>(null);
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("file", file?.data);
+    const response = await fetch("/api/training", {
+      method: "POST",
+      body: formData,
+    });
+    const responseWithBody = await response.json();
+    if (response) setUrl(responseWithBody.publicUrl);
+  };
+  const handleFileChange = (e: any) => {
+    const img = {
+      preview: URL.createObjectURL(e.target.files[0]),
+      data: e.target.files[0],
+    };
+    setFile(img);
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded" onClick={() => startTraining(false)}>Test train</button>
-      <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded" onClick={() => startTraining(true)}>Test bucket</button>
+      <form onSubmit={handleSubmit}>
+        <input type="file" name="file" onChange={handleFileChange}></input>
+        <button type="submit">Submit</button>
+      </form>
     </main>
   )
 }
