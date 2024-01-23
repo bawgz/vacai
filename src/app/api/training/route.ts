@@ -32,7 +32,9 @@ export async function POST(request: Request) {
     return Response.json({ error: 'No file uploaded' }, { status: 400 });
   }
 
-  const response = await storage.bucket('vacai').file(file.name).save(Buffer.from(await file.arrayBuffer()));
+  const response = await storage.bucket('vacai')
+    .file(file.name)
+    .save(Buffer.from(await file.arrayBuffer()));
 
   console.log(response);
 
