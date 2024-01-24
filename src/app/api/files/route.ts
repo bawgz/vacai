@@ -9,6 +9,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       onBeforeGenerateToken: async () => {
+        // TODO: ensure the user is authenticated
         // Generate a client token for the browser to upload the file
         return {
           allowedContentTypes: ['application/zip'],
