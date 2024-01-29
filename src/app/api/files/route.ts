@@ -54,6 +54,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
           const baseModel = `${REPLICATE_BASE_MODEL_OWNER}/${REPLICATE_BASE_MODEL}:${REPLICATE_BASE_MODEL_VERSION}`;
 
+          // TODO: add created at and updated at
+
           const sqlResult = await sql`
             INSERT INTO trainings (
                 id, 

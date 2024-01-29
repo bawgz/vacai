@@ -43,6 +43,15 @@ export default function Home() {
     setBlob(newBlob);
   }
 
+  async function handlePredict() {
+    const response = await fetch('/api/predictions', {
+      method: 'POST',
+    });
+
+    const jsonData = await response.json();
+    console.log(jsonData);
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <form onSubmit={handleSubmit}>
@@ -54,6 +63,7 @@ export default function Home() {
           Training started for images: <a href={blob.url}>here</a>
         </div>
       )}
+      <button onClick={handlePredict}>Rip a predict</button>
     </main>
   )
 }
