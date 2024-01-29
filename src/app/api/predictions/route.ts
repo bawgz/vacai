@@ -48,3 +48,11 @@ export async function POST() {
 
   return Response.json(prediction);
 }
+
+export async function GET() {
+  const predictions = await sql`
+    SELECT * FROM predictions;
+  `;
+
+  return Response.json(predictions.rows);
+}
