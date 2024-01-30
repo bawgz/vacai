@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 
+const HOST = process.env.BASE_URL;
+
 export default async function PhotoList() {
 
   async function getPhotos() {
-    const photos = await fetch('http://localhost:3000/api/predictions', { cache: 'no-store' });
+    const photos = await fetch(`${HOST}/api/predictions`, { cache: 'no-store' });
     return await photos.json();
   }
 
