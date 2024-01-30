@@ -14,14 +14,14 @@ export default async function PhotoList() {
   console.log("photos", photos);
 
   return (
-    <div className="flex justify-center mb-4">
+    <>
       {photos.filter((x: any) => x.result).map((photo: any) => {
         return (
-          <div key={photo.id} className='w-1/4'>
-            <Image src={photo.result} alt={""} fill className='w-1/4' />
+          <div key={photo.id} className='relative w-[200px] h-[200px]'>
+            <Image src={photo.result} alt={""} fill />
           </div>
         );
       })}
-    </div>
+    </>
   );
 }
