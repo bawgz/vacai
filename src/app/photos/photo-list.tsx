@@ -19,9 +19,7 @@ export default async function PhotoList() {
     <>
       {photos.filter((x: any) => x.result).map((photo: any) => {
         return (
-          <div key={photo.id} className='relative w-[200px] h-[200px]'>
-            <Image src={photo.result} alt={""} fill />
-          </div>
+          <Image key={photo.id} src={photo.result} alt={""} width={350} height={350} />
         );
       })}
     </>

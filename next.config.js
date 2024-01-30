@@ -7,9 +7,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'replicate.delivery',
+        hostname: 'storage.googleapis.com',
         port: '',
-        pathname: '**',
+        pathname: '/vacai/results/*.{jpg,jpeg,png,webp}',
       },
     ],
   },

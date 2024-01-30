@@ -9,7 +9,7 @@ const HOST = process.env.BASE_URL;
 
 export async function POST() {
   const input = {
-    prompt: "a photo of TOK man wearing a resort shirt and pit viper sunglasses, standing in front of the pyramids of Giza, instagram",
+    prompt: "a photo of TOK man wearing pit viper sunglasses, standing in front of the pyramids of Giza, instagram",
     negative_prompt: "((((ugly)))), (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (((long neck)))",
     refine: "expert_ensemble_refiner",
     high_noise_frac: 0.95,
