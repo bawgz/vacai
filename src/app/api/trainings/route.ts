@@ -1,4 +1,15 @@
 import { sql } from '@vercel/postgres';
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '../../../types/supabase'
+
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
+}
+
+const supabase = createClient<Database>(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+)
 
 const REPLICATE_BASE_MODEL_OWNER = 'bawgz';
 const REPLICATE_BASE_MODEL = 'dripfusion-base';
@@ -44,11 +55,16 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  const sqlResult = await sql`
-    SELECT * FROM trainings;
-  `;
+  const { data, error } = await supabase
+    .from('trainings')
+    .select();
 
-  console.log(sqlResult);
+  if (error) {
+    console.log('error', error);
+    return Response.json('Unable to fetch trainings', { status: 500 });
+  }
 
-  return Response.json(sqlResult.rows);
+  console.log('data', data);
+
+  return Response.json(data);
 }
