@@ -1,69 +1,24 @@
-'use client'
+'use server'
 
-import React, { useState, useRef, FormEvent } from "react";
-import { type PutBlobResult } from '@vercel/blob';
-import { upload } from '@vercel/blob/client';
-import JSZip from "jszip";
+import React from "react";
+import PredictionsForm from "./prediction-form";
+import TrainingForm from "./training-form";
 
-export default function Home() {
+export default async function Home() {
 
-  const inputFileRef = useRef<HTMLInputElement>(null);
-  const [blob, setBlob] = useState<PutBlobResult | null>(null);
+  const HOST = process.env.BASE_URL;
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const trainings = await getTrainings();
 
-    console.log(inputFileRef.current!.files);
-
-    if (!inputFileRef?.current?.files || !inputFileRef.current.files.length) {
-      console.error('No files selected');
-      return;
-    }
-    const zip = new JSZip();
-
-    console.log("zipping files");
-    for (const file of inputFileRef.current.files) {
-      zip.file(file.name, Buffer.from(await file.arrayBuffer()))
-    }
-
-    const zipResult = await zip.generateAsync({ type: "arraybuffer" });
-
-    console.log("zip result");
-    console.log(zipResult);
-
-    const trainingId = crypto.randomUUID();
-
-    const newBlob = await upload(`${trainingId}.zip`, zipResult, {
-      access: 'public',
-      handleUploadUrl: '/api/files',
-    });
-
-    console.log("new blob", newBlob);
-
-    setBlob(newBlob);
-  }
-
-  async function handlePredict() {
-    const response = await fetch('/api/predictions', {
-      method: 'POST',
-    });
-
-    const jsonData = await response.json();
-    console.log(jsonData);
+  async function getTrainings() {
+    const trainings = await fetch(`${HOST}/api/trainings`, { cache: 'no-store' });
+    return await trainings.json();
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form onSubmit={handleSubmit}>
-        <input name="file" ref={inputFileRef} type="file" accept="image/*" multiple required />
-        <button type="submit">Upload</button>
-      </form>
-      {blob && (
-        <div>
-          Training started for images: <a href={blob.url}>here</a>
-        </div>
-      )}
-      <button onClick={handlePredict}>Rip a predict</button>
+      <TrainingForm />
+      <PredictionsForm trainings={trainings} />
     </main>
   )
 }

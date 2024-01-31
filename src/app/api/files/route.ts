@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import Replicate from "replicate";
 import { sql } from '@vercel/postgres';
 
+const HOST = process.env.BASE_URL;
+
 const replicate = new Replicate();
 const REPLICATE_BASE_MODEL_OWNER = 'bawgz';
 const REPLICATE_BASE_MODEL = 'dripfusion-base';
@@ -47,6 +49,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             {
               destination: REPLICATE_TRAINING_DESTINATION,
               input: trainingInput,
+              webhook: `${HOST}/api/trainings/webhook`,
             }
           );
 

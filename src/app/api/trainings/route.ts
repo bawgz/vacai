@@ -50,5 +50,5 @@ export async function GET() {
 
   console.log(sqlResult);
 
-  return Response.json(sqlResult);
+  return Response.json(sqlResult.rows);
 }
