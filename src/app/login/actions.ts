@@ -36,14 +36,20 @@ export async function signup(formData: FormData) {
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
-  }
+    options: {
+      emailRedirectTo: process.env.BASE_URL,
+    },
+  };
+
+  console.log('data', data);
 
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
+    console.log("error", error);
     redirect('/error')
   }
 
   revalidatePath('/', 'layout')
-  redirect('/')
+  redirect('/login/confirm')
 }
