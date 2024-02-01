@@ -1,4 +1,5 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
+import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server';
 import Replicate from "replicate";
 import { createClient } from '@supabase/supabase-js';
@@ -23,6 +24,10 @@ const REPLICATE_TRAINING_DESTINATION = 'bawgz/dripfusion-trained';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
+  // const cookieStore = cookies();
+  const { data, error } = await supabase.auth.getUser();
+
+  console.log(data, error);
 
   try {
     const jsonResponse = await handleUpload({
@@ -76,6 +81,7 @@ export async function POST(request: Request): Promise<NextResponse> {
               destination_model: REPLICATE_TRAINING_DESTINATION,
               input: trainingInput,
               status: trainingResponse.status,
+              user_id: ''
             });
 
           if (error) {

@@ -1,14 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-import { Database } from '../../../types/supabase'
-
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
-}
-
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
+import { createClient } from '@/utils/supabase/actions'
+import { cookies } from 'next/headers';
 
 const REPLICATE_BASE_MODEL_OWNER = 'bawgz';
 const REPLICATE_BASE_MODEL = 'dripfusion-base';
@@ -16,6 +7,8 @@ const REPLICATE_BASE_MODEL_VERSION = 'f63d3f0d61f26ce9b2328b12588f8d1e65cc852273
 const REPLICATE_TRAINING_DESTINATION = 'bawgz/dripfusion-trained';
 
 export async function POST(req: Request) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
   const body = await req.json();
 
@@ -50,6 +43,18 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+  const cookieStore = cookies();
+
+  const supabase = createClient(cookieStore);
+
+  const userData = await supabase.auth.getUser();
+
+  console.log("userData", userData);
+
+  if (!userData) {
+    return Response.json('Unauthorized', { status: 401 });
+  }
+
   const { data, error } = await supabase
     .from('trainings')
     .select('id')
