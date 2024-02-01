@@ -1,23 +1,23 @@
 'use server'
 
+import { getPhotos } from "@/actions/photos";
 import Image from "next/image";
 
 const HOST = process.env.BASE_URL;
 
 export default async function PhotoList() {
 
-  async function getPhotos() {
-    const photos = await fetch(`${HOST}/api/photos`, { cache: 'no-store' });
-    return await photos.json();
+  const { error, data } = await getPhotos();
+
+  if (error || !data) {
+    console.error(error);
   }
 
-  const photos = await getPhotos();
-
-  console.log("photos", photos);
+  console.log("photos", data);
 
   return (
     <>
-      {photos.map((photo: any) => {
+      {(data || []).map((photo: any) => {
         return (
           <Image key={photo.id} src={photo.url} alt={""} width={350} height={350} />
         );

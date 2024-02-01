@@ -1,3 +1,4 @@
+import { getTrainings } from '@/actions/trainings';
 import { createClient } from '@/utils/supabase/actions'
 import { cookies } from 'next/headers';
 
@@ -43,23 +44,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  const cookieStore = cookies();
-
-  const supabase = createClient(cookieStore);
-
-  const userData = await supabase.auth.getUser();
-
-  console.log("userData", userData);
-
-  if (!userData) {
-    return Response.json('Unauthorized', { status: 401 });
-  }
-
-  const { data, error } = await supabase
-    .from('trainings')
-    .select('id')
-    .eq('status', 'succeeded')
-    .order('created_at', { ascending: false });
+  const { data, error } = await getTrainings();
 
   if (error) {
     console.log('error', error);

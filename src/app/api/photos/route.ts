@@ -1,6 +1,7 @@
 import Replicate from "replicate";
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '../../../types/supabase'
+import { getPhotos } from "@/actions/photos";
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
   throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
@@ -74,11 +75,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const { data, error } = await supabase
-    .from('photos')
-    .select('id, url')
-    .not('url', 'is', null)
-    .order('created_at', { ascending: false });
+  const { data, error } = await getPhotos();
 
   if (error) {
     console.log('error', error);

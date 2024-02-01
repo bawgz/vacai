@@ -1,6 +1,8 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const HOST = process.env.BASE_URL;
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -54,7 +56,15 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || data.user?.role !== 'authenticated') {
+    console.log("handling auth error in middleware", error, data, request);
+    if (request.nextUrl.pathname.startsWith('/api')) {
+      return NextResponse.json('Unauthorized', { status: 401 });
+    }
+    return NextResponse.redirect(`${HOST}/login`);
+  }
 
   return response
 }
@@ -66,8 +76,9 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - login (login page)
      * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|login|api/trainings/webhook|api/photos/webhook).*)',
   ],
 }
