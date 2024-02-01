@@ -7,7 +7,7 @@ const HOST = process.env.BASE_URL;
 export default async function PhotoList() {
 
   async function getPhotos() {
-    const photos = await fetch(`${HOST}/api/predictions`, { cache: 'no-store' });
+    const photos = await fetch(`${HOST}/api/photos`, { cache: 'no-store' });
     return await photos.json();
   }
 
@@ -17,9 +17,9 @@ export default async function PhotoList() {
 
   return (
     <>
-      {photos.filter((x: any) => x.result).map((photo: any) => {
+      {photos.map((photo: any) => {
         return (
-          <Image key={photo.id} src={photo.result} alt={""} width={350} height={350} />
+          <Image key={photo.id} src={photo.url} alt={""} width={350} height={350} />
         );
       })}
     </>

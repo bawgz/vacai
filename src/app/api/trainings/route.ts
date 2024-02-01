@@ -1,4 +1,3 @@
-import { sql } from '@vercel/postgres';
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '../../../types/supabase'
 
@@ -31,25 +30,21 @@ export async function POST(req: Request) {
 
   const baseModel = `${REPLICATE_BASE_MODEL_OWNER}/${REPLICATE_BASE_MODEL}:${REPLICATE_BASE_MODEL_VERSION}`;
 
-  const sqlResult = await sql`
-  INSERT INTO trainings (
-      id, 
-      replicate_id, 
-      base_model,
-      destination_model,
-      input,
-      status
-  ) VALUES (
-      ${body.id},
-      'wjjkollblo3vby2zvek6oxh63q',
-      ${baseModel},
-      ${REPLICATE_TRAINING_DESTINATION},
-      ${JSON.stringify(trainingInput)},
-      'pending'
-  );
-`;
+  const { error } = await supabase
+    .from('trainings')
+    .insert({
+      id: body.id,
+      replicate_id: 'wjjkollblo3vby2zvek6oxh63q',
+      base_model: baseModel,
+      destination_model: REPLICATE_TRAINING_DESTINATION,
+      input: trainingInput,
+      status: 'starting',
+    });
 
-  console.log('sqlResult', sqlResult);
+  if (error) {
+    console.error('error', error);
+    return Response.json('Failed to create training', { status: 500 });
+  }
 
   return Response.json({ hell: "yeah" })
 }
@@ -57,7 +52,9 @@ export async function POST(req: Request) {
 export async function GET() {
   const { data, error } = await supabase
     .from('trainings')
-    .select();
+    .select('id')
+    .eq('status', 'succeeded')
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.log('error', error);

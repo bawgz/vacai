@@ -1,7 +1,7 @@
 'use server'
 
 import React from "react";
-import PredictionsForm from "./prediction-form";
+import PhotoForm from "./photo-form";
 import TrainingForm from "./training-form";
 
 export default async function Home() {
@@ -18,7 +18,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <TrainingForm />
-      <PredictionsForm trainings={trainings} />
+      <PhotoForm trainings={trainings} />
     </main>
   )
 }

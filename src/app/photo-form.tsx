@@ -10,15 +10,13 @@ interface Training {
   id: string;
 }
 
-export default function PredictionsForm(props: Props) {
+export default function PhotoForm(props: Props) {
 
   const { trainings } = props;
 
   const trainingSelectRef = useRef<HTMLSelectElement>(null);
 
-  // const trainingSelectRef = useRef<HTMLSelectElement>(null);
-
-  async function handlePredict(event: FormEvent<HTMLFormElement>) {
+  async function handleTakePhoto(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!trainingSelectRef?.current?.value) {
@@ -26,7 +24,7 @@ export default function PredictionsForm(props: Props) {
       return;
     }
 
-    const response = await fetch('/api/predictions', {
+    const response = await fetch('/api/photos', {
       method: 'POST',
       body: JSON.stringify({ trainingId: trainingSelectRef.current.value }),
     });
@@ -36,7 +34,7 @@ export default function PredictionsForm(props: Props) {
   }
 
   return (
-    <form onSubmit={handlePredict}>
+    <form onSubmit={handleTakePhoto}>
       <div className="w-full">
         <label htmlFor="trainings">Choose a training:</label>
         <select name="trainings" id="trainings" ref={trainingSelectRef} className="w-full p-2 border border-gray-300 rounded-md text-black">
