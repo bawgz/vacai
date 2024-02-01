@@ -19,6 +19,7 @@ export interface Database {
           training_id: string
           updated_at: string | null
           url: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -29,6 +30,7 @@ export interface Database {
           training_id: string
           updated_at?: string | null
           url?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -39,8 +41,17 @@ export interface Database {
           training_id?: string
           updated_at?: string | null
           url?: string | null
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "photos_trainings_fk"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       trainings: {
         Row: {
@@ -52,6 +63,7 @@ export interface Database {
           replicate_id: string
           status: string
           updated_at: string | null
+          user_id: string
         }
         Insert: {
           base_model: string
@@ -62,6 +74,7 @@ export interface Database {
           replicate_id: string
           status?: string
           updated_at?: string | null
+          user_id: string
         }
         Update: {
           base_model?: string
@@ -72,6 +85,7 @@ export interface Database {
           replicate_id?: string
           status?: string
           updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
