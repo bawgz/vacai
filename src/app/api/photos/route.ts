@@ -1,16 +1,7 @@
 import Replicate from "replicate";
-import { createClient } from '@supabase/supabase-js'
-import { Database } from '../../../types/supabase'
 import { getPhotos } from "@/actions/photos";
-
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
-}
-
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
+import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 
 const replicate = new Replicate();
 
@@ -18,6 +9,15 @@ const HOST = process.env.BASE_URL;
 
 export async function POST(request: Request) {
   const body = await request.json();
+  const cookieStore = cookies();
+
+  const supabase = createClient(cookieStore);
+
+  const clientData = await supabase.auth.getUser();
+
+  if (!clientData.data?.user?.id || clientData.error) {
+    return Response.json('Unauthorized', { status: 401 });
+  }
 
   const trainingId = body.trainingId;
 
@@ -60,6 +60,7 @@ export async function POST(request: Request) {
     training_id: trainingId,
     input,
     status: prediction.status,
+    user_id: clientData.data.user.id,
   }
 
   const result = await supabase

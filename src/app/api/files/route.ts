@@ -1,18 +1,8 @@
+import { createClient } from '@/utils/supabase/server';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server';
 import Replicate from "replicate";
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '../../../types/supabase';
-
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
-}
-
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
 
 const HOST = process.env.BASE_URL;
 
@@ -24,10 +14,18 @@ const REPLICATE_TRAINING_DESTINATION = 'bawgz/dripfusion-trained';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
-  // const cookieStore = cookies();
-  const { data, error } = await supabase.auth.getUser();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
-  console.log(data, error);
+  const authResponse = await supabase.auth.getUser();
+
+  if (authResponse.error || !authResponse.data?.user?.id) {
+    console.log("Invalid auth response", authResponse);
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 },
+    );
+  }
 
   try {
     const jsonResponse = await handleUpload({
@@ -38,6 +36,9 @@ export async function POST(request: Request): Promise<NextResponse> {
         // Generate a client token for the browser to upload the file
         return {
           allowedContentTypes: ['application/zip'],
+          tokenPayload: JSON.stringify({
+            userId: authResponse.data.user.id
+          }),
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
@@ -46,6 +47,12 @@ export async function POST(request: Request): Promise<NextResponse> {
         // Use ngrok or similar to get the full upload flow
 
         console.log('blob upload completed', blob, tokenPayload);
+
+        const token = JSON.parse(tokenPayload || '{}');
+
+        if (!token.userId) {
+          throw new Error('Invalid token payload');
+        }
 
         const trainingInput = {
           "input_images": blob.url,
@@ -81,23 +88,21 @@ export async function POST(request: Request): Promise<NextResponse> {
               destination_model: REPLICATE_TRAINING_DESTINATION,
               input: trainingInput,
               status: trainingResponse.status,
-              user_id: ''
+              user_id: token.userId,
             });
 
           if (error) {
             console.error('error', error);
           }
-
-          // use vercel/postgres to store internal id and replicate id and status
-
         } catch (error) {
-          console.error('error', error);
+          throw new Error('Failed to create training');
         }
       },
     });
 
     return NextResponse.json(jsonResponse);
   } catch (error) {
+    console.error('error', error);
     return NextResponse.json(
       { error: (error as Error).message },
       { status: 400 }, // The webhook will retry 5 times waiting for a 200
