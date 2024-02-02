@@ -7,9 +7,9 @@ import Replicate from "replicate";
 const HOST = process.env.BASE_URL;
 
 const replicate = new Replicate();
-const REPLICATE_BASE_MODEL_OWNER = 'stability-ai';
-const REPLICATE_BASE_MODEL = 'sdxl';
-const REPLICATE_BASE_MODEL_VERSION = '39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b';
+const REPLICATE_BASE_MODEL_OWNER = 'fofr';
+const REPLICATE_BASE_MODEL = 'realvisxl-v3';
+const REPLICATE_BASE_MODEL_VERSION = '33279060bbbb8858700eb2146350a98d96ef334fcf817f37eb05915e1534aa1c';
 const REPLICATE_TRAINING_DESTINATION = 'bawgz/dripfusion-trained';
 
 interface Response {

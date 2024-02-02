@@ -1,22 +1,7 @@
-import { GetSignedUrlConfig, Storage } from "@google-cloud/storage";
+import { GetSignedUrlConfig } from "@google-cloud/storage";
+import { createStorageClient } from "@/utils/gcp/storage";
 
-if (!process.env.GCP_CREDENTIALS) {
-  throw new Error('GCP credentials not set.');
-}
-
-const credential = JSON.parse(
-  Buffer.from(process.env.GCP_CREDENTIALS, "base64").toString()
-);
-
-const storage = new Storage(
-  {
-    projectId: 'vacai-412020',
-    credentials: {
-      client_email: credential.client_email,
-      private_key: credential.private_key,
-    },
-  }
-);
+const storage = createStorageClient();
 
 export async function POST(request: Request): Promise<Response> {
   console.log('request', request);

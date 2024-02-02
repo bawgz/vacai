@@ -1,17 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
-import { Database } from '../../../../types/supabase'
-
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
-}
-
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
+import { createClient } from '@/utils/supabase/webhook'
 
 export async function POST(request: Request): Promise<Response> {
   const body = await request.json();
+
+  const supabase = createClient();
+
 
   console.log('webook', body);
 

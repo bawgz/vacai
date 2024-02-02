@@ -1,6 +1,5 @@
-import { Storage } from "@google-cloud/storage";
-import { createClient } from '@supabase/supabase-js'
-import { Database } from '../../../../types/supabase'
+import { createClient } from "@/utils/supabase/webhook";
+import { createStorageClient } from "@/utils/gcp/storage";
 
 interface UpdateValues {
   status: string;
@@ -8,34 +7,10 @@ interface UpdateValues {
   url?: string;
 }
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY')
-}
-
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-)
-
-if (!process.env.GCP_CREDENTIALS) {
-  throw new Error('GCP_CREDENTIALS not set.');
-}
-
-const credential = JSON.parse(
-  Buffer.from(process.env.GCP_CREDENTIALS, "base64").toString()
-);
-
-const storage = new Storage(
-  {
-    projectId: 'vacai-412020',
-    credentials: {
-      client_email: credential.client_email,
-      private_key: credential.private_key,
-    },
-  }
-);
+const storage = createStorageClient();
 
 export async function POST(request: Request): Promise<Response> {
+  const supabase = createClient();
   const body = await request.json();
 
   console.log('webook', body);
