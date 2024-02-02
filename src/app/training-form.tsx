@@ -71,7 +71,7 @@ export default function TrainingForm() {
 
     console.log("upload url", url);
 
-    const uploadResponse = await fetch("https://webhook.site/0832bdb6-e9b6-4ef4-898c-c6811acb232b", { method: 'PUT', body: zipResult });
+    const uploadResponse = await fetch(url, { method: 'PUT', body: zipResult });
 
     console.log("upload response", uploadResponse);
   }
