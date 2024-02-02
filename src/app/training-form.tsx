@@ -4,6 +4,7 @@ import React, { useState, useRef, FormEvent } from "react";
 import { type PutBlobResult } from '@vercel/blob';
 import { upload } from '@vercel/blob/client';
 import JSZip from "jszip";
+import { createTrainingV2 } from "@/actions/trainings";
 
 export default function TrainingForm() {
 
@@ -86,6 +87,8 @@ export default function TrainingForm() {
       console.error('Failed to upload');
       return;
     }
+
+    const result = await createTrainingV2(trainingId);
 
     // call next endpoint to start training
     // const trainingResponse = await fetch('/api/training', { method: 'POST', body: JSON.stringify({ trainingId }) });

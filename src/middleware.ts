@@ -79,6 +79,6 @@ export const config = {
      * - login (login page)
      * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico|logo.png|login|api/trainings/webhook|api/photos/webhook|api/files).*)',
+    '/((?!_next/static|_next/image|favicon.ico|logo.png|login|api/trainings/webhook|api/photos/webhook).*)',
   ],
 }

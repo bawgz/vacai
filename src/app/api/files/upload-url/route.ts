@@ -38,13 +38,5 @@ export async function POST(request: Request): Promise<Response> {
     .file(`training-data/${body.fileName}`)
     .getSignedUrl(options);
 
-  console.log('Generated PUT signed URL:');
-  console.log(url);
-  console.log('You can use this URL with any user agent, for example:');
-  console.log(
-    "curl -X PUT -H 'Content-Type: application/zip' " +
-    `--upload-file my-file '${url}'`
-  );
-
   return Response.json({ url });
 }

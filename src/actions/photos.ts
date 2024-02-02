@@ -1,3 +1,5 @@
+'use server';
+
 import { createClient } from "@/utils/supabase/actions";
 import { cookies } from "next/headers";
 
