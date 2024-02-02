@@ -36,12 +36,12 @@ export async function POST(request: Request) {
   const modelParts = data.destination_model.split(':');
 
   const input = {
-    prompt: "a photo of TOK man wearing bright silky buttondown shirt, standing in front of the pyramids of Giza, instagram",
+    prompt: "((a photo of TOK man)), wearing bright aqua resort shirt, standing in front of the pyramids of Giza, instagram",
     negative_prompt: "((((ugly)))), (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (((long neck)))",
     refine: "expert_ensemble_refiner",
     high_noise_frac: 0.95,
-    lora_scale_custom: 1.0,
-    num_inference_steps: 100
+    lora_scale: 0.8,
+    num_inference_steps: 50,
   };
 
   const prediction = await replicate.predictions.create(
