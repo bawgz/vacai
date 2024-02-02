@@ -53,3 +53,28 @@ export async function signup(formData: FormData) {
   revalidatePath('/', 'layout')
   redirect('/login/confirm')
 }
+
+export async function logout() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase.auth.signOut();
+
+  console.log("error", error);
+
+  if (error) {
+    redirect('/error')
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/login')
+}
+
+export async function isUserSignedIn(): Promise<boolean> {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error, data } = await supabase.auth.getUser();
+
+  return !error && !!data.user;
+}
