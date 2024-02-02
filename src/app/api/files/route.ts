@@ -14,25 +14,21 @@ const REPLICATE_TRAINING_DESTINATION = 'bawgz/dripfusion-trained';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const authResponse = await supabase.auth.getUser();
-
-  if (authResponse.error || !authResponse.data?.user?.id) {
-    console.log("Invalid auth response", authResponse);
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 },
-    );
-  }
 
   try {
     const jsonResponse = await handleUpload({
       body,
       request,
       onBeforeGenerateToken: async () => {
-        // TODO: ensure the user is authenticated
+        const cookieStore = cookies();
+        const supabase = createClient(cookieStore);
+
+        const authResponse = await supabase.auth.getUser();
+
+        if (authResponse.error || !authResponse.data?.user?.id) {
+          console.log("Invalid auth response", authResponse);
+          throw new Error('Invalid auth response');
+        }
         // Generate a client token for the browser to upload the file
         return {
           allowedContentTypes: ['application/zip'],
@@ -78,6 +74,9 @@ export async function POST(request: Request): Promise<NextResponse> {
           console.log('trainingResponse', trainingResponse);
 
           const baseModel = `${REPLICATE_BASE_MODEL_OWNER}/${REPLICATE_BASE_MODEL}:${REPLICATE_BASE_MODEL_VERSION}`;
+
+          const cookieStore = cookies();
+          const supabase = createClient(cookieStore);
 
           const { error } = await supabase
             .from('trainings')
