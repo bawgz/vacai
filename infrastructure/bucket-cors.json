@@ -1,0 +1,16 @@
+[
+  {
+    "origin": [
+      "http://localhost:3000",
+      "https://together-mallard-fancy.ngrok-free.app",
+      "https://vacai.vercel.app"
+    ],
+    "method": [
+      "PUT"
+    ],
+    "maxAgeSeconds": 3600,
+    "responseHeader": [
+      "*"
+    ]
+  }
+]

@@ -71,9 +71,26 @@ export default function TrainingForm() {
 
     console.log("upload url", url);
 
-    const uploadResponse = await fetch(url, { method: 'PUT', body: zipResult });
+    const uploadResponse = await fetch(
+      url,
+      {
+        method: 'PUT',
+        body: zipResult,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        }
+      });
 
-    console.log("upload response", uploadResponse);
+
+    if (!uploadResponse.ok) {
+      console.error('Failed to upload');
+      return;
+    }
+
+    // call next endpoint to start training
+    // const trainingResponse = await fetch('/api/training', { method: 'POST', body: JSON.stringify({ trainingId }) });
+
+    // console.log("training response", trainingResponse);
   }
 
   return (

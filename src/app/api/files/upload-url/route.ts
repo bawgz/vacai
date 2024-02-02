@@ -29,7 +29,7 @@ export async function POST(request: Request): Promise<Response> {
     version: 'v4',
     action: 'write',
     expires: Date.now() + 1 * 60 * 1000, // 1 minute
-    contentType: 'application/zip',
+    contentType: 'application/octet-stream'
   };
 
   // Get a v4 signed URL for uploading file
