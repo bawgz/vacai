@@ -56,10 +56,12 @@ export interface Database {
       trainings: {
         Row: {
           base_model: string
+          class: string
           created_at: string
           destination_model: string
           id: string
           input: Json
+          name: string
           replicate_id: string
           status: string
           updated_at: string | null
@@ -67,10 +69,12 @@ export interface Database {
         }
         Insert: {
           base_model: string
+          class: string
           created_at?: string
           destination_model: string
           id: string
           input: Json
+          name: string
           replicate_id: string
           status?: string
           updated_at?: string | null
@@ -78,10 +82,12 @@ export interface Database {
         }
         Update: {
           base_model?: string
+          class?: string
           created_at?: string
           destination_model?: string
           id?: string
           input?: Json
+          name?: string
           replicate_id?: string
           status?: string
           updated_at?: string | null

@@ -1,9 +1,10 @@
 'use server'
 
 import React from "react";
-import PhotoForm from "./photo-form";
-import TrainingForm from "./training-form";
+import PhotoForm from "@/components/photo-form";
+import TrainingForm from "@/components/training-form";
 import { getTrainings } from "@/actions/trainings";
+import PhotoList from "@/components/photo-list";
 
 export default async function Home() {
 
@@ -16,9 +17,14 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <TrainingForm />
-      <PhotoForm trainings={data || []} />
+    <main className="flex flex-wrap min-h-screen gap-5 p-24">
+      <div className="w-1/2">
+        <TrainingForm />
+      </div>
+      <div className="w-1/2">
+        <PhotoForm trainings={data || []} />
+      </div>
+      <PhotoList />
     </main>
   )
 }

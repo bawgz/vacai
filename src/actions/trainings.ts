@@ -13,7 +13,7 @@ const REPLICATE_BASE_MODEL_VERSION = '33279060bbbb8858700eb2146350a98d96ef334fcf
 const REPLICATE_TRAINING_DESTINATION = 'bawgz/dripfusion-trained';
 
 interface Response {
-  data?: { id: any }[] | null;
+  data?: { id: any, name: any }[] | null;
   error?: {
     message: string,
     details?: string,
@@ -37,7 +37,7 @@ export async function getTrainings(): Promise<Response> {
 
   const result = await supabase
     .from('trainings')
-    .select('id')
+    .select('id, name')
     .eq('user_id', userData.data.user.id)
     .eq('status', 'succeeded')
     .order('created_at', { ascending: false });
@@ -45,58 +45,7 @@ export async function getTrainings(): Promise<Response> {
   return result;
 }
 
-export async function createTraining(id: string, url: string, userId: string) {
-  const trainingInput = {
-    "input_images": url,
-    "caption_prefix": 'A photo of TOK man, ',
-    "use_face_detection_instead": true,
-    "train_batch_size": 1,
-    "max_train_steps": 3000,
-    "lora_lr": 1e-4,
-  };
-
-  try {
-    const trainingResponse = await replicate.trainings.create(
-      REPLICATE_BASE_MODEL_OWNER,
-      REPLICATE_BASE_MODEL,
-      REPLICATE_BASE_MODEL_VERSION,
-      {
-        destination: REPLICATE_TRAINING_DESTINATION,
-        input: trainingInput,
-        webhook: `${HOST}/api/trainings/webhook`,
-      }
-    );
-
-    console.log('trainingResponse', trainingResponse);
-
-    const baseModel = `${REPLICATE_BASE_MODEL_OWNER}/${REPLICATE_BASE_MODEL}:${REPLICATE_BASE_MODEL_VERSION}`;
-
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-
-    const trainingData = {
-      id: id,
-      replicate_id: trainingResponse.id,
-      base_model: baseModel,
-      destination_model: REPLICATE_TRAINING_DESTINATION,
-      input: trainingInput,
-      status: trainingResponse.status,
-      user_id: userId,
-    }
-
-    const { error } = await supabase
-      .from('trainings')
-      .insert(trainingData);
-
-    if (error) {
-      console.error('Error: failed to save training data', JSON.stringify(trainingData), error);
-    }
-  } catch (error) {
-    throw new Error('Failed to create training');
-  }
-}
-
-export async function createTrainingV2(id: string) {
+export async function createTraining(id: string, name: string, subjectClass: string) {
   const cookieStore = cookies();
 
   const supabase = createClient(cookieStore);
@@ -111,7 +60,7 @@ export async function createTrainingV2(id: string) {
 
   const trainingInput = {
     "input_images": `https://storage.googleapis.com/vacai/training-data/${id}.zip`,
-    "caption_prefix": 'A photo of TOK man, ',
+    "caption_prefix": `A photo of TOK ${subjectClass}, `,
     "use_face_detection_instead": true,
     "train_batch_size": 1,
     "max_train_steps": 3000,
@@ -145,6 +94,8 @@ export async function createTrainingV2(id: string) {
       input: trainingInput,
       status: trainingResponse.status,
       user_id: userData.data.user.id,
+      name: name,
+      class: subjectClass,
     }
 
     const { error } = await supabase

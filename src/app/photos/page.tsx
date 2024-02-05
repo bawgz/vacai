@@ -1,5 +1,5 @@
 import React from "react";
-import PhotoList from "./photo-list";
+import PhotoList from "@/components/photo-list";
 
 export default function Photos() {
 

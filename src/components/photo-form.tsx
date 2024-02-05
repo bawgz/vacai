@@ -8,6 +8,7 @@ interface Props {
 
 interface Training {
   id: string;
+  name: string;
 }
 
 export default function PhotoForm(props: Props) {
@@ -36,12 +37,12 @@ export default function PhotoForm(props: Props) {
   return (
     <form onSubmit={handleTakePhoto}>
       <div className="w-full">
-        <label htmlFor="trainings">Choose a training:</label>
+        <label htmlFor="trainings">Choose a model:</label>
         <select name="trainings" id="trainings" ref={trainingSelectRef} className="w-full p-2 border border-gray-300 rounded-md text-black">
           <option value="">Select a training</option>
           {trainings.map((training) => (
             <option key={training.id} value={training.id}>
-              {training.id}
+              {training.name}
             </option>
           ))}
         </select>
