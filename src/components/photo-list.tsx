@@ -17,7 +17,7 @@ export default async function PhotoList() {
 
   return (
     <>
-      <h1 className="w-full">Photos</h1>
+      <h1 className="w-full text-lg">Photo Library</h1>
       {(data || []).map((photo: any) => {
         return (
           <Image key={photo.id} src={photo.url} alt={""} width={350} height={350} />

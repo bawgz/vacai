@@ -18,10 +18,10 @@ export default async function Home() {
 
   return (
     <main className="flex flex-wrap min-h-screen gap-5 p-24">
-      <div className="w-1/2">
+      <div className="md:w-1/2 sm:w-full">
         <TrainingForm />
       </div>
-      <div className="w-1/2">
+      <div className="md:w-1/2">
         <PhotoForm trainings={data || []} />
       </div>
       <PhotoList />
