@@ -1,29 +1,30 @@
-'use server'
+'use client'
 
-import { getPhotos } from "@/actions/photos";
+import React from "react";
 import Image from "next/image";
 import PlaceholderLoading from "react-placeholder-loading";
 
-const HOST = process.env.BASE_URL;
+interface Props {
+  photos: Photo[];
+}
 
-export default async function PhotoList() {
-
-  const { error, data } = await getPhotos();
-
-  if (error || !data) {
-    console.error(error);
-  }
-
-  console.log("photos", data);
-
+export default function PhotoList({ photos }: Props) {
   return (
     <>
       <h1 className="w-full text-lg">Photo Library</h1>
-      {(data || []).map((photo: any) => (
+      {(photos).map((photo: any) => (
         photo.url
-          ? <Image key={photo.id} src={photo.url} alt={""} width={350} height={350} loading="lazy" />
+          ?
+          <Image
+            key={photo.id}
+            alt="Generated photo"
+            className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
+            style={{ transform: "translate3d(0, 0, 0)" }}
+            src={photo.url}
+            width={350}
+            height={350}
+          />
           : <PlaceholderLoading key={photo.id} shape="rect" width={350} height={350} />
-
       ))}
     </>
   );

@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/actions";
 import { cookies } from "next/headers";
 
 interface Response {
-  data?: { id: any, url: any }[] | null;
+  data?: Photo[] | null;
   error?: {
     message: string,
     details?: string,
