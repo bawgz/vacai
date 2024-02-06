@@ -17,6 +17,7 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-placeholder-loading": "^0.5.30",
     "replicate": "^0.25.2"
   },
   "devDependencies": {

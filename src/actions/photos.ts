@@ -32,7 +32,6 @@ export async function getPhotos(): Promise<Response> {
     .from('photos')
     .select('id, url')
     .eq('user_id', userData.data.user.id)
-    .eq('status', 'succeeded')
     .order('created_at', { ascending: false });
 
   return result;
