@@ -3,31 +3,28 @@
 import React, { useState, useRef, FormEvent } from "react";
 
 interface Props {
-  trainings: Training[];
+  models: Model[];
 }
 
-interface Training {
+interface Model {
   id: string;
   name: string;
 }
 
-export default function PhotoForm(props: Props) {
-
-  const { trainings } = props;
-
-  const trainingSelectRef = useRef<HTMLSelectElement>(null);
+export default function PhotoForm({ models }: Props) {
+  const modelSelectRef = useRef<HTMLSelectElement>(null);
 
   async function handleTakePhoto(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!trainingSelectRef?.current?.value) {
-      console.error('No training selected');
+    if (!modelSelectRef?.current?.value) {
+      console.error('No model selected');
       return;
     }
 
     const response = await fetch('/api/photos', {
       method: 'POST',
-      body: JSON.stringify({ trainingId: trainingSelectRef.current.value }),
+      body: JSON.stringify({ modelId: modelSelectRef.current.value }),
     });
 
     const jsonData = await response.json();
@@ -38,11 +35,11 @@ export default function PhotoForm(props: Props) {
     <>
       <h1 className="text-lg">Capture new photos</h1>
       <form onSubmit={handleTakePhoto}>
-        <select name="trainings" id="trainings" ref={trainingSelectRef} className="w-full p-2 border border-gray-300 rounded-md text-black my-2">
+        <select name="models" id="models" ref={modelSelectRef} className="w-full p-2 border border-gray-300 rounded-md text-black my-2">
           <option value="">Select a model</option>
-          {trainings.map((training) => (
-            <option key={training.id} value={training.id}>
-              {training.name}
+          {models.map((model) => (
+            <option key={model.id} value={model.id}>
+              {model.name}
             </option>
           ))}
         </select>

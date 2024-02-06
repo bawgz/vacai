@@ -2,9 +2,9 @@
 
 import React, { useRef, FormEvent } from "react";
 import JSZip from "jszip";
-import { createTraining } from "@/actions/trainings";
+import { createModel } from "@/actions/models";
 
-export default function TrainingForm() {
+export default function ModelForm() {
 
   const inputFileRef = useRef<HTMLInputElement>(null);
   const inputNameRef = useRef<HTMLInputElement>(null);
@@ -42,9 +42,9 @@ export default function TrainingForm() {
     console.log("zip result");
     console.log(zipResult);
 
-    const trainingId = crypto.randomUUID();
+    const modelId = crypto.randomUUID();
 
-    const response = await fetch('/api/upload-url', { method: 'POST', body: JSON.stringify({ fileName: `${trainingId}.zip` }) });
+    const response = await fetch('/api/upload-url', { method: 'POST', body: JSON.stringify({ fileName: `${modelId}.zip` }) });
     const { url } = await response.json();
 
     console.log("upload url", url);
@@ -65,7 +65,7 @@ export default function TrainingForm() {
       return;
     }
 
-    await createTraining(trainingId, inputNameRef.current.value, selectClassRef.current.value);
+    await createModel(modelId, inputNameRef.current.value, selectClassRef.current.value);
 
     inputFileRef.current.value = '';
   }

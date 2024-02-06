@@ -22,7 +22,7 @@ interface Response {
   } | null;
 }
 
-export async function getTrainings(): Promise<Response> {
+export async function getModels(): Promise<Response> {
   const cookieStore = cookies();
 
   const supabase = createClient(cookieStore);
@@ -36,7 +36,7 @@ export async function getTrainings(): Promise<Response> {
   }
 
   const result = await supabase
-    .from('trainings')
+    .from('models')
     .select('id, name')
     .eq('user_id', userData.data.user.id)
     .eq('status', 'succeeded')
@@ -45,7 +45,7 @@ export async function getTrainings(): Promise<Response> {
   return result;
 }
 
-export async function createTraining(id: string, name: string, subjectClass: string) {
+export async function createModel(id: string, name: string, subjectClass: string) {
   const cookieStore = cookies();
 
   const supabase = createClient(cookieStore);
@@ -68,44 +68,44 @@ export async function createTraining(id: string, name: string, subjectClass: str
   };
 
   try {
-    const trainingResponse = await replicate.trainings.create(
+    const createTrainingResponse = await replicate.trainings.create(
       REPLICATE_BASE_MODEL_OWNER,
       REPLICATE_BASE_MODEL,
       REPLICATE_BASE_MODEL_VERSION,
       {
         destination: REPLICATE_TRAINING_DESTINATION,
         input: trainingInput,
-        webhook: `${HOST}/api/trainings/webhook`,
+        webhook: `${HOST}/api/models/webhook`,
       }
     );
 
-    console.log('trainingResponse', trainingResponse);
+    console.log('Replicate create training response: ', createTrainingResponse);
 
     const baseModel = `${REPLICATE_BASE_MODEL_OWNER}/${REPLICATE_BASE_MODEL}:${REPLICATE_BASE_MODEL_VERSION}`;
 
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
-    const trainingData = {
+    const modelData = {
       id: id,
-      replicate_id: trainingResponse.id,
+      replicate_training_id: createTrainingResponse.id,
       base_model: baseModel,
       destination_model: REPLICATE_TRAINING_DESTINATION,
       input: trainingInput,
-      status: trainingResponse.status,
+      status: createTrainingResponse.status,
       user_id: userData.data.user.id,
       name: name,
       class: subjectClass,
     }
 
     const { error } = await supabase
-      .from('trainings')
-      .insert(trainingData);
+      .from('models')
+      .insert(modelData);
 
     if (error) {
-      console.error('Error: failed to save training data', JSON.stringify(trainingData), error);
+      console.error('Error: failed to save model data', JSON.stringify(modelData), error);
     }
   } catch (error) {
-    throw new Error('Failed to create training');
+    throw new Error('Failed to create model');
   }
 }

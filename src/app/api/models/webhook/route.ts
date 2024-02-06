@@ -13,13 +13,13 @@ export async function POST(request: Request): Promise<Response> {
     : { status: body.status, updated_at: new Date().toISOString() };
 
   const { error } = await supabase
-    .from('trainings')
+    .from('models')
     .update(updateBody)
-    .eq('replicate_id', body.id);
+    .eq('replicate_training_id', body.id);
 
   if (error) {
     console.log('error', error);
-    return Response.json('Failed to update training', { status: 500 });
+    return Response.json('Failed to update model', { status: 500 });
   }
 
   return Response.json({});

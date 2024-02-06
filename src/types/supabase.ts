@@ -9,51 +9,7 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      photos: {
-        Row: {
-          created_at: string
-          id: string
-          input: Json
-          replicate_id: string
-          status: string
-          training_id: string
-          updated_at: string | null
-          url: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          input: Json
-          replicate_id: string
-          status?: string
-          training_id: string
-          updated_at?: string | null
-          url?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          input?: Json
-          replicate_id?: string
-          status?: string
-          training_id?: string
-          updated_at?: string | null
-          url?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "photos_trainings_fk"
-            columns: ["training_id"]
-            isOneToOne: false
-            referencedRelation: "trainings"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      trainings: {
+      models: {
         Row: {
           base_model: string
           class: string
@@ -62,7 +18,7 @@ export interface Database {
           id: string
           input: Json
           name: string
-          replicate_id: string
+          replicate_training_id: string
           status: string
           updated_at: string | null
           user_id: string
@@ -75,7 +31,7 @@ export interface Database {
           id: string
           input: Json
           name: string
-          replicate_id: string
+          replicate_training_id: string
           status?: string
           updated_at?: string | null
           user_id: string
@@ -88,12 +44,56 @@ export interface Database {
           id?: string
           input?: Json
           name?: string
-          replicate_id?: string
+          replicate_training_id?: string
           status?: string
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      photos: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          model_id: string
+          replicate_id: string
+          status: string
+          updated_at: string | null
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          input: Json
+          model_id: string
+          replicate_id: string
+          status?: string
+          updated_at?: string | null
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          model_id?: string
+          replicate_id?: string
+          status?: string
+          updated_at?: string | null
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_models_fk"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "models"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

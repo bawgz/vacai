@@ -19,24 +19,22 @@ export async function POST(request: Request) {
     return Response.json('Unauthorized', { status: 401 });
   }
 
-  const trainingId = body.trainingId;
-
-  console.log("trainingId", trainingId);
+  const modelId = body.modelId;
 
   const { error, data } = await supabase
-    .from('trainings')
+    .from('models')
     .select('destination_model, class')
-    .eq('id', trainingId)
+    .eq('id', modelId)
     .single();
 
   if (error || !data) {
-    return Response.json('Training not found', { status: 404 });
+    return Response.json('Model not found', { status: 404 });
   }
 
   const modelParts = data.destination_model.split(':');
 
   const input = {
-    prompt: `((a photo of TOK ${data.class})), standing in front of the pyramids of Giza, wearing bright eye-catching colors, instagram`,
+    prompt: `((a photo of TOK ${data.class})), standing in front of the pyramids of Giza, wearing bright stylish outfit, instagram`,
     negative_prompt: "((((ugly)))), (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (((long neck)))",
     refine: "expert_ensemble_refiner",
     high_noise_frac: 0.95,
@@ -58,7 +56,7 @@ export async function POST(request: Request) {
   const photo = {
     id: crypto.randomUUID(),
     replicate_id: prediction.id,
-    training_id: trainingId,
+    model_id: modelId,
     input,
     status: prediction.status,
     user_id: clientData.data.user.id,
