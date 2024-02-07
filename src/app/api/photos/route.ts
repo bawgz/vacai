@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const modelParts = data.destination_model.split(':');
 
   const input = {
-    prompt: `a photo of TOK ${data.class}, standing in front of the pyramids of Giza, wearing a bright casual outfit, instagram`,
+    prompt: `a photo of TOK ${data.class}, skiing in the Rockie Mountains, wearing a ski outfit, instagram`,
     negative_prompt: "((((ugly)))), (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (((long neck)))",
     refine: "expert_ensemble_refiner",
     high_noise_frac: 0.95,
