@@ -5,7 +5,7 @@ import Image from "next/image";
 import PlaceholderLoading from "react-placeholder-loading";
 
 interface Props {
-  photos: PhotoWithBlur[];
+  photos: Photo[];
 }
 
 export default function PhotoList({ photos }: Props) {
@@ -23,8 +23,6 @@ export default function PhotoList({ photos }: Props) {
             src={photo.url}
             width={350}
             height={350}
-            placeholder="blur"
-            blurDataURL={photo.blurUrl}
           />
           : <PlaceholderLoading key={photo.id} shape="rect" width={350} height={350} />
       ))}

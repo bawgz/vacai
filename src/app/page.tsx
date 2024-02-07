@@ -8,7 +8,7 @@ import { getPhotos } from "@/actions/photos";
 
 export default function Home() {
   const [models, setModels] = useState<Model[]>([]);
-  const [photos, setPhotos] = useState<PhotoWithBlur[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [pollPhotos, setPollPhotos] = useState(false);
 
   const modelSelectRef = useRef<HTMLSelectElement>(null);

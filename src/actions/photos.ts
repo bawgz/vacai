@@ -1,11 +1,10 @@
 'use server';
 
-import { generateBlurPlaceholder } from "@/utils/generateBlurPlaceholder";
 import { createClient } from "@/utils/supabase/actions";
 import { cookies } from "next/headers";
 
 interface Response {
-  data?: PhotoWithBlur[] | null;
+  data?: Photo[] | null;
   error?: {
     message: string,
     details?: string,
@@ -35,20 +34,5 @@ export async function getPhotos(): Promise<Response> {
     .eq('user_id', userData.data.user.id)
     .order('created_at', { ascending: false });
 
-  const photosWithBlur = await generateBlurImages(result.data);
-
-  return { data: photosWithBlur, error: result.error };
-}
-
-async function generateBlurImages(photos: Photo[] | null | undefined): Promise<PhotoWithBlur[] | null> {
-  if (photos) {
-    const blurImagePromises = photos.map((photo: Photo) => {
-      return generateBlurPlaceholder(photo);
-    });
-    const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
-
-    return imagesWithBlurDataUrls;
-  }
-
-  return null;
+  return result;
 }

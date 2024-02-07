@@ -15,7 +15,6 @@
     "@supabase/supabase-js": "^2.39.3",
     "jszip": "^3.10.1",
     "next": "14.1.0",
-    "plaiceholder": "^3.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-placeholder-loading": "^0.5.30",
