@@ -1,14 +1,30 @@
 'use client'
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import PlaceholderLoading from "react-placeholder-loading";
+import { useRouter } from "next/navigation";
 
 interface Props {
   photos: Photo[];
 }
 
 export default function PhotoList({ photos }: Props) {
+  const router = useRouter();
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (photos.some((photo) => !photo.url)) {
+      interval = setInterval(async () => {
+        router.refresh();
+      }, 5000);
+    }
+
+
+    return () => clearInterval(interval);
+  }, [router, photos]);
+
   return (
     <>
       <h1 className="w-full text-lg">Photo Library</h1>
@@ -25,6 +41,7 @@ export default function PhotoList({ photos }: Props) {
             height={350}
           />
           :
+          // TODO: fix the placeholder corners. They're not rounded
           <div key={photo.id} className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110" style={{ transform: "translate3d(0, 0, 0)" }}>
             <PlaceholderLoading shape="rect" width={350} height={350} />
           </div>

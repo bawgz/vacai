@@ -3,7 +3,9 @@
 import React from "react";
 import { getModels } from "@/actions/models";
 import { getPhotos } from "@/actions/photos";
-import MainPage from "@/components/main-page-client";
+import ModelForm from "@/components/model-form";
+import PhotoForm from "@/components/photo-form";
+import PhotoList from "@/components/photo-list";
 
 export default async function Home() {
 
@@ -21,11 +23,23 @@ export default async function Home() {
     console.error(photosResponse.error);
   }
 
-  const photos = photosResponse.data || [];
+  let photos = photosResponse.data || [];
 
   return (
     <main className="flex flex-wrap gap-5 p-24">
-      <MainPage models={models} photos={photos} />
+      <div className="md:w-1/2 sm:w-full">
+        <ModelForm />
+      </div>
+      {
+        models.length > 0
+        &&
+        <>
+          <div className="md:w-1/2 sm:w-full">
+            <PhotoForm models={models} />
+          </div>
+          <PhotoList photos={photos} />
+        </>
+      }
     </main>
   )
 }
