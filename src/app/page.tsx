@@ -10,6 +10,7 @@ export default function Home() {
   const [models, setModels] = useState<Model[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [pollPhotos, setPollPhotos] = useState(false);
+  const [isLoadingCapturePhoto, setIsLoadingCapturePhoto] = useState(false);
 
   const modelSelectRef = useRef<HTMLSelectElement>(null);
 
@@ -57,9 +58,11 @@ export default function Home() {
 
   async function handleTakePhoto(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoadingCapturePhoto(true);
 
     if (!modelSelectRef?.current?.value) {
       console.error('No model selected');
+      setIsLoadingCapturePhoto(false);
       return;
     }
 
@@ -72,6 +75,7 @@ export default function Home() {
     console.log(jsonData);
 
     setPollPhotos(true);
+    setIsLoadingCapturePhoto(false);
   }
 
   return (
@@ -94,7 +98,7 @@ export default function Home() {
                   </option>
                 ))}
               </select>
-              <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Capture</button>
+              <button type="submit" disabled={isLoadingCapturePhoto} className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-black">Capture</button>
             </form>
           </div>
           <PhotoList photos={photos} />
