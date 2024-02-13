@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, FormEvent } from "react";
+import React, { useState, useRef, FormEvent } from "react";
 import JSZip from "jszip";
 import { createModel } from "@/actions/models";
 
@@ -10,23 +10,33 @@ export default function ModelForm() {
   const inputNameRef = useRef<HTMLInputElement>(null);
   const selectClassRef = useRef<HTMLSelectElement>(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   async function handleUpload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoading(true);
+
+    console.log("button should be disabled", isLoading)
+
+    // TODO: mega enhance the error handling
 
     console.log(inputFileRef.current!.files);
 
     if (!inputFileRef?.current?.files || !inputFileRef.current.files.length) {
       console.error('No files selected');
+      setIsLoading(false);
       return;
     }
 
     if (!inputNameRef?.current?.value) {
       console.error('No name entered');
+      setIsLoading(false);
       return;
     }
 
     if (!selectClassRef?.current?.value) {
       console.error('No class selected');
+      setIsLoading(false);
       return;
     }
 
@@ -62,12 +72,23 @@ export default function ModelForm() {
 
     if (!uploadResponse.ok) {
       console.error('Failed to upload');
+      setIsLoading(false);
       return;
     }
 
-    await createModel(modelId, inputNameRef.current.value, selectClassRef.current.value);
+    const isSuccessfulyCreated = await createModel(modelId, inputNameRef.current.value, selectClassRef.current.value);
+
+    if (!isSuccessfulyCreated) {
+      console.error('Failed to create model');
+      setIsLoading(false);
+      return;
+    }
 
     inputFileRef.current.value = '';
+    inputNameRef.current.value = '';
+    selectClassRef.current.value = '';
+
+    setIsLoading(false);
   }
 
   return (
@@ -81,7 +102,7 @@ export default function ModelForm() {
           <option value="man">Woman</option>
         </select>
         <input name="file" ref={inputFileRef} type="file" accept="image/*" multiple required className="block w-full p-2 border border-gray-300 rounded-md cursor-pointer focus:outline-none my-2 text-black bg-white" />
-        <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create</button>
+        <button type="submit" disabled={isLoading} className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-black">Create</button>
       </form>
     </>
   );

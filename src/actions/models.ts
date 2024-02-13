@@ -45,7 +45,7 @@ export async function getModels(): Promise<Response> {
   return result;
 }
 
-export async function createModel(id: string, name: string, subjectClass: string) {
+export async function createModel(id: string, name: string, subjectClass: string): Promise<boolean> {
   const cookieStore = cookies();
 
   const supabase = createClient(cookieStore);
@@ -53,9 +53,8 @@ export async function createModel(id: string, name: string, subjectClass: string
   const userData = await supabase.auth.getUser();
 
   if (!userData.data?.user?.id || userData.error) {
-    return {
-      error: { message: "User not found" }
-    }
+    console.error('Error: user not found', userData);
+    return false;
   }
 
   const trainingInput = {
@@ -104,8 +103,12 @@ export async function createModel(id: string, name: string, subjectClass: string
 
     if (error) {
       console.error('Error: failed to save model data', JSON.stringify(modelData), error);
+      return false;
     }
+
+    return true;
   } catch (error) {
-    throw new Error('Failed to create model');
+    console.error('Error: failed to create training', error);
+    return false;
   }
 }
