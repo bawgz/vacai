@@ -29,7 +29,7 @@ export async function getPhotos(): Promise<Response> {
   }
 
   const result = await supabase
-    .from('photos')
+    .from('predictions')
     .select('id, url')
     .eq('user_id', userData.data.user.id)
     .order('created_at', { ascending: false });

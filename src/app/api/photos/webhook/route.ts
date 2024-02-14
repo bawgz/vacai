@@ -32,7 +32,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const { error } = await supabase
-    .from('photos')
+    .from('predictions')
     .update(updateValues)
     .eq('replicate_id', body.id);
 

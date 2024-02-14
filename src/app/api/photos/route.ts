@@ -63,7 +63,7 @@ export async function POST(request: Request) {
   }
 
   const result = await supabase
-    .from('photos')
+    .from('predictions')
     .insert(photo);
 
   if (result.error) {
