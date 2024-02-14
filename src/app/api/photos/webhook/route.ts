@@ -28,6 +28,15 @@ export async function POST(request: Request): Promise<Response> {
 
     const url = `https://storage.googleapis.com/vacai/results/${id}.png`;
 
+    const { error } = await supabase
+      .from('photos')
+      .insert({ replicate_id: body.id, url });
+
+    if (error) {
+      console.log('error', error);
+      return Response.json('Failed to save photo', { status: 500 });
+    }
+
     updateValues['url'] = url;
   }
 

@@ -53,6 +53,27 @@ export type Database = {
       }
       photos: {
         Row: {
+          id: string
+          placeholder_data: string | null
+          replicate_id: string
+          url: string
+        }
+        Insert: {
+          id?: string
+          placeholder_data?: string | null
+          replicate_id: string
+          url: string
+        }
+        Update: {
+          id?: string
+          placeholder_data?: string | null
+          replicate_id?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      photos_old: {
+        Row: {
           created_at: string
           id: string
           input: Json
