@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/webhook";
 import { createStorageClient } from "@/utils/gcp/storage";
+import { getPlaiceholder } from "plaiceholder";
 
 interface UpdateValues {
   status: string;
@@ -22,9 +23,11 @@ export async function POST(request: Request): Promise<Response> {
 
     let img = await fetch(body.output[0], { cache: 'no-store' });
 
+    const buffer = Buffer.from(await img.arrayBuffer());
+
     await storage.bucket('vacai')
       .file(`results/${id}.png`)
-      .save(Buffer.from(await img.arrayBuffer()));
+      .save(buffer);
 
     const url = `https://storage.googleapis.com/vacai/results/${id}.png`;
 
@@ -39,9 +42,11 @@ export async function POST(request: Request): Promise<Response> {
       return Response.json('Unknown failure occurred', { status: 500 });
     }
 
+    const { base64 } = await getPlaiceholder(buffer);
+
     const { error } = await supabase
       .from('photos')
-      .update({ url })
+      .update({ url, placeholder_data: base64 })
       .eq('predictions_id', predictionsResponse.data.id);
 
     if (error) {

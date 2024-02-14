@@ -39,6 +39,8 @@ export default function PhotoList({ photos }: Props) {
             src={photo.url}
             width={350}
             height={350}
+            placeholder={photo.placeholder_data ? "blur" : "empty"}
+            blurDataURL={photo.placeholder_data || undefined}
           />
           :
           // TODO: fix the placeholder corners. They're not rounded
