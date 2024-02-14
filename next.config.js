@@ -6,13 +6,13 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'storage.googleapis.com',
-        port: '',
-        pathname: '/vacai/results/*.{jpg,jpeg,png,webp}',
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+        port: "",
+        pathname: "/vacai/results/*.{jpg,jpeg,png,webp}",
       },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

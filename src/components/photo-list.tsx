@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useEffect } from "react";
 import Image from "next/image";
@@ -21,16 +21,14 @@ export default function PhotoList({ photos }: Props) {
       }, 5000);
     }
 
-
     return () => clearInterval(interval);
   }, [router, photos]);
 
   return (
     <>
       <h1 className="w-full text-lg">Photo Library</h1>
-      {(photos).map((photo: any) => (
-        photo.url
-          ?
+      {photos.map((photo: any) =>
+        photo.url ? (
           <Image
             key={photo.id}
             alt="Generated photo"
@@ -42,12 +40,17 @@ export default function PhotoList({ photos }: Props) {
             placeholder={photo.placeholder_data ? "blur" : "empty"}
             blurDataURL={photo.placeholder_data || undefined}
           />
-          :
+        ) : (
           // TODO: fix the placeholder corners. They're not rounded
-          <div key={photo.id} className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110" style={{ transform: "translate3d(0, 0, 0)" }}>
+          <div
+            key={photo.id}
+            className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
+            style={{ transform: "translate3d(0, 0, 0)" }}
+          >
             <PlaceholderLoading shape="rect" width={350} height={350} />
           </div>
-      ))}
+        ),
+      )}
     </>
   );
 }

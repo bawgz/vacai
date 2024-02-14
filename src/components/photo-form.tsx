@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useRef, useState } from "react";
@@ -18,13 +18,13 @@ export default function PhotoForm({ models }: Props) {
     setIsLoadingCapturePhoto(true);
 
     if (!modelSelectRef?.current?.value) {
-      console.error('No model selected');
+      console.error("No model selected");
       setIsLoadingCapturePhoto(false);
       return;
     }
 
-    const response = await fetch('/api/photos', {
-      method: 'POST',
+    const response = await fetch("/api/photos", {
+      method: "POST",
       body: JSON.stringify({ modelId: modelSelectRef.current.value }),
     });
 
@@ -39,7 +39,12 @@ export default function PhotoForm({ models }: Props) {
     <>
       <h1 className="text-lg">Capture new photos</h1>
       <form onSubmit={handleTakePhoto}>
-        <select name="models" id="models" ref={modelSelectRef} className="w-full p-2 border border-gray-300 rounded-md text-black my-2">
+        <select
+          name="models"
+          id="models"
+          ref={modelSelectRef}
+          className="w-full p-2 border border-gray-300 rounded-md text-black my-2"
+        >
           <option value="">Select a model</option>
           {models.map((model) => (
             <option key={model.id} value={model.id}>
@@ -47,7 +52,13 @@ export default function PhotoForm({ models }: Props) {
             </option>
           ))}
         </select>
-        <button type="submit" disabled={isLoadingCapturePhoto} className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-black">Capture</button>
+        <button
+          type="submit"
+          disabled={isLoadingCapturePhoto}
+          className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-black"
+        >
+          Capture
+        </button>
       </form>
     </>
   );

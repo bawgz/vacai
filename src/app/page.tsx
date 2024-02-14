@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import React from "react";
 import { getModels } from "@/actions/models";
@@ -8,7 +8,6 @@ import PhotoForm from "@/components/photo-form";
 import PhotoList from "@/components/photo-list";
 
 export default async function Home() {
-
   const modelsResponse = await getModels();
 
   if (modelsResponse.error) {
@@ -30,16 +29,14 @@ export default async function Home() {
       <div className="md:w-1/2 sm:w-full">
         <ModelForm />
       </div>
-      {
-        models.length > 0
-        &&
+      {models.length > 0 && (
         <>
           <div className="md:w-1/2 sm:w-full">
             <PhotoForm models={models} />
           </div>
           <PhotoList photos={photos} />
         </>
-      }
+      )}
     </main>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 const HOST = process.env.BASE_URL;
 
@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
     request: {
       headers: request.headers,
     },
-  })
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,57 +16,57 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         get(name: string) {
-          return request.cookies.get(name)?.value
+          return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
           request.cookies.set({
             name,
             value,
             ...options,
-          })
+          });
           response = NextResponse.next({
             request: {
               headers: request.headers,
             },
-          })
+          });
           response.cookies.set({
             name,
             value,
             ...options,
-          })
+          });
         },
         remove(name: string, options: CookieOptions) {
           request.cookies.set({
             name,
-            value: '',
+            value: "",
             ...options,
-          })
+          });
           response = NextResponse.next({
             request: {
               headers: request.headers,
             },
-          })
+          });
           response.cookies.set({
             name,
-            value: '',
+            value: "",
             ...options,
-          })
+          });
         },
       },
-    }
-  )
+    },
+  );
 
   const { data, error } = await supabase.auth.getUser();
 
-  if (error || data.user?.role !== 'authenticated') {
+  if (error || data.user?.role !== "authenticated") {
     console.log("handling auth error in middleware", error, data, request);
-    if (request.nextUrl.pathname.startsWith('/api')) {
-      return NextResponse.json('Unauthorized', { status: 401 });
+    if (request.nextUrl.pathname.startsWith("/api")) {
+      return NextResponse.json("Unauthorized", { status: 401 });
     }
     return NextResponse.redirect(`${HOST}/login`);
   }
 
-  return response
+  return response;
 }
 
 export const config = {
@@ -79,6 +79,6 @@ export const config = {
      * - login (login page)
      * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico|logo.png|login|auth|api/models/webhook|api/photos/webhook).*)',
+    "/((?!_next/static|_next/image|favicon.ico|logo.png|login|auth|api/models/webhook|api/photos/webhook).*)",
   ],
-}
+};
