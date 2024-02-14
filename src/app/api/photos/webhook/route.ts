@@ -28,9 +28,20 @@ export async function POST(request: Request): Promise<Response> {
 
     const url = `https://storage.googleapis.com/vacai/results/${id}.png`;
 
+    const predictionsResponse = await supabase
+      .from('predictions')
+      .select('id')
+      .eq('replicate_id', body.id)
+      .single();
+
+    if (predictionsResponse.error || !predictionsResponse.data) {
+      console.log('Unknown failure occurred', predictionsResponse);
+      return Response.json('Unknown failure occurred', { status: 500 });
+    }
+
     const { error } = await supabase
       .from('photos')
-      .insert({ replicate_id: body.id, url });
+      .insert({ predictions_id: predictionsResponse.data.id, url });
 
     if (error) {
       console.log('error', error);

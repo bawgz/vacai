@@ -53,24 +53,38 @@ export type Database = {
       }
       photos: {
         Row: {
+          created_at: string
           id: string
           placeholder_data: string | null
-          replicate_id: string
+          predictions_id: string | null
+          replicate_id: string | null
           url: string
         }
         Insert: {
+          created_at?: string
           id?: string
           placeholder_data?: string | null
-          replicate_id: string
+          predictions_id?: string | null
+          replicate_id?: string | null
           url: string
         }
         Update: {
+          created_at?: string
           id?: string
           placeholder_data?: string | null
-          replicate_id?: string
+          predictions_id?: string | null
+          replicate_id?: string | null
           url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "photos_predictions_fk"
+            columns: ["predictions_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       photos_old: {
         Row: {
