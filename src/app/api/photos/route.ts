@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error || !data) {
+    console.error('error', error, data);
     return Response.json('Model not found', { status: 404 });
   }
 
@@ -53,21 +54,30 @@ export async function POST(request: Request) {
 
   console.log('prediction', prediction);
 
-  const photo = {
+  const predictionToSave = {
     id: crypto.randomUUID(),
     replicate_id: prediction.id,
     model_id: modelId,
     input,
     status: prediction.status,
-    user_id: clientData.data.user.id,
+    user_id: clientData.data.user.id
   }
 
-  const result = await supabase
+  const predictionResult = await supabase
     .from('predictions')
-    .insert(photo);
+    .insert(predictionToSave);
 
-  if (result.error) {
-    console.log('error', result.error);
+  if (predictionResult.error) {
+    console.error('error', predictionResult.error);
+    return Response.json('Unable to create new prediction', { status: 500 });
+  }
+
+  const photoResult = await supabase
+    .from('photos')
+    .insert({ predictions_id: predictionToSave.id });
+
+  if (photoResult.error) {
+    console.error('error', photoResult.error);
     return Response.json('Unable to create new photo', { status: 500 });
   }
 

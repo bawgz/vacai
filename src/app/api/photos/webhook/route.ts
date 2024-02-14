@@ -41,7 +41,8 @@ export async function POST(request: Request): Promise<Response> {
 
     const { error } = await supabase
       .from('photos')
-      .insert({ predictions_id: predictionsResponse.data.id, url });
+      .update({ url })
+      .eq('predictions_id', predictionsResponse.data.id);
 
     if (error) {
       console.log('error', error);

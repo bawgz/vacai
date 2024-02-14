@@ -28,11 +28,14 @@ export async function getPhotos(): Promise<Response> {
     }
   }
 
-  const result = await supabase
-    .from('predictions')
-    .select('id, url')
-    .eq('user_id', userData.data.user.id)
+  const { data, error } = await supabase
+    .from('photos')
+    .select('id, url, predictions!inner(user_id)')
+    .eq('predictions.user_id', userData.data.user.id)
     .order('created_at', { ascending: false });
 
-  return result;
+  return {
+    data: data?.map((photo: Photo) => ({ id: photo.id, url: photo.url })),
+    error
+  };
 }

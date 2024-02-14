@@ -56,25 +56,22 @@ export type Database = {
           created_at: string
           id: string
           placeholder_data: string | null
-          predictions_id: string | null
-          replicate_id: string | null
-          url: string
+          predictions_id: string
+          url: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           placeholder_data?: string | null
-          predictions_id?: string | null
-          replicate_id?: string | null
-          url: string
+          predictions_id: string
+          url?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           placeholder_data?: string | null
-          predictions_id?: string | null
-          replicate_id?: string | null
-          url?: string
+          predictions_id?: string
+          url?: string | null
         }
         Relationships: [
           {
