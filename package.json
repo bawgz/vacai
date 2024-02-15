@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "ngrok": "ngrok http --domain=together-mallard-fancy.ngrok-free.app 3000",
     "lint": "next lint",
     "update-supabase-types": "npx supabase gen types typescript --project-id \"uhqjenucoofljqloxzfg\" --schema public > src/types/supabase.ts",
     "prepare": "husky"

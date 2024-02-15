@@ -2,8 +2,13 @@
 
 import { createClient } from "@/utils/supabase/actions";
 import { cookies } from "next/headers";
+import Replicate from "replicate";
 
-interface Response {
+const replicate = new Replicate();
+
+const HOST = process.env.BASE_URL;
+
+interface GetResponse {
   data?: Photo[] | null;
   error?: {
     message: string;
@@ -13,7 +18,16 @@ interface Response {
   } | null;
 }
 
-export async function getPhotos(): Promise<Response> {
+interface CreateResponse {
+  error: {
+    message: string;
+    details?: string;
+    hint?: string;
+    code?: string;
+  } | null;
+}
+
+export async function getPhotos(): Promise<GetResponse> {
   const cookieStore = cookies();
 
   const supabase = createClient(cookieStore);
@@ -42,4 +56,77 @@ export async function getPhotos(): Promise<Response> {
     })),
     error,
   };
+}
+
+export async function createPhotos(modelId: string): Promise<CreateResponse> {
+  const cookieStore = cookies();
+
+  const supabase = createClient(cookieStore);
+
+  const clientData = await supabase.auth.getUser();
+
+  if (!clientData.data?.user?.id || clientData.error) {
+    return { error: { message: "User not found" } };
+  }
+
+  const { error, data } = await supabase
+    .from("models")
+    .select("destination_model, class")
+    .eq("id", modelId)
+    .single();
+
+  if (error || !data) {
+    console.error("error", error, data);
+    return { error: { message: "Model not found" } };
+  }
+
+  const modelParts = data.destination_model.split(":");
+
+  const input = {
+    prompt: `a photo of TOK ${data.class}, standing in front of the pyramids of Giza, wearing a bright casual outfit, instagram`,
+    negative_prompt:
+      "((((ugly)))), (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), (fused fingers), (too many fingers), (((long neck)))",
+    refine: "expert_ensemble_refiner",
+    high_noise_frac: 0.95,
+    lora_scale: 0.8,
+    num_inference_steps: 75,
+  };
+
+  const prediction = await replicate.predictions.create({
+    model: modelParts[0],
+    version: modelParts[1],
+    webhook: `${HOST}/api/photos/webhook`,
+    input,
+  });
+
+  console.log("prediction", prediction);
+
+  const predictionToSave = {
+    id: crypto.randomUUID(),
+    replicate_id: prediction.id,
+    model_id: modelId,
+    input,
+    status: prediction.status,
+    user_id: clientData.data.user.id,
+  };
+
+  const predictionResult = await supabase
+    .from("predictions")
+    .insert(predictionToSave);
+
+  if (predictionResult.error) {
+    console.error("error", predictionResult.error);
+    return { error: { message: "Unable to create new prediction" } };
+  }
+
+  const photoResult = await supabase
+    .from("photos")
+    .insert({ predictions_id: predictionToSave.id });
+
+  if (photoResult.error) {
+    console.error("error", photoResult.error);
+    return { error: photoResult.error };
+  }
+
+  return { error: null };
 }

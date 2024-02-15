@@ -1,5 +1,6 @@
 "use client";
 
+import { createPhotos } from "@/actions/photos";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useRef, useState } from "react";
 
@@ -23,13 +24,13 @@ export default function PhotoForm({ models }: Props) {
       return;
     }
 
-    const response = await fetch("/api/photos", {
-      method: "POST",
-      body: JSON.stringify({ modelId: modelSelectRef.current.value }),
-    });
+    const { error } = await createPhotos(modelSelectRef.current.value);
 
-    const jsonData = await response.json();
-    console.log(jsonData);
+    if (error) {
+      console.error("error", error);
+      setIsLoadingCapturePhoto(false);
+      return;
+    }
 
     setIsLoadingCapturePhoto(false);
     router.refresh();
