@@ -7,6 +7,7 @@ import Replicate from "replicate";
 const replicate = new Replicate();
 
 const HOST = process.env.BASE_URL;
+const NUM_OUTPUTS = 4;
 
 interface GetResponse {
   data?: Photo[] | null;
@@ -90,6 +91,7 @@ export async function createPhotos(modelId: string): Promise<CreateResponse> {
     high_noise_frac: 0.95,
     lora_scale: 0.8,
     num_inference_steps: 75,
+    num_outputs: NUM_OUTPUTS,
   };
 
   const prediction = await replicate.predictions.create({
@@ -119,14 +121,24 @@ export async function createPhotos(modelId: string): Promise<CreateResponse> {
     return { error: { message: "Unable to create new prediction" } };
   }
 
-  const photoResult = await supabase
-    .from("photos")
-    .insert({ predictions_id: predictionToSave.id });
+  const photoPromises = Array.from({ length: NUM_OUTPUTS }).map((_, index) =>
+    supabase.from("photos").insert({
+      predictions_id: predictionToSave.id,
+      index,
+    }),
+  );
 
-  if (photoResult.error) {
-    console.error("error", photoResult.error);
-    return { error: photoResult.error };
+  const photoResults = await Promise.all(photoPromises);
+
+  const photoErrors = photoResults.filter((result) => result.error);
+
+  if (photoErrors.length === 0) {
+    return { error: null };
   }
 
-  return { error: null };
+  console.error("error", photoErrors);
+
+  return photoErrors.length === NUM_OUTPUTS
+    ? { error: { message: "Unable to create new photos" } }
+    : { error: null };
 }
