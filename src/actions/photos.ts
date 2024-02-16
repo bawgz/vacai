@@ -35,9 +35,8 @@ export async function getPhotos(): Promise<GetResponse> {
 
   const userData = await supabase.auth.getUser();
 
-  console.log("userData", userData);
-
   if (!userData.data?.user?.id || userData.error) {
+    console.error("User not found", userData);
     return {
       error: { message: "User not found" },
     };
