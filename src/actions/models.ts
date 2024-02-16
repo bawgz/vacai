@@ -13,6 +13,11 @@ const REPLICATE_BASE_MODEL_VERSION =
   "33279060bbbb8858700eb2146350a98d96ef334fcf817f37eb05915e1534aa1c";
 const REPLICATE_TRAINING_DESTINATION = "bawgz/dripfusion-trained";
 
+// const REPLICATE_BASE_MODEL_OWNER = "stability-ai";
+// const REPLICATE_BASE_MODEL = "sdxl";
+// const REPLICATE_BASE_MODEL_VERSION =
+//   "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b";
+
 interface Response {
   data?: { id: any; name: any }[] | null;
   error?: {
@@ -65,10 +70,11 @@ export async function createModel(
   const trainingInput = {
     input_images: `https://storage.googleapis.com/vacai/training-data/${id}.zip`,
     caption_prefix: `A photo of TOK ${subjectClass}, `,
-    use_face_detection_instead: true,
     train_batch_size: 1,
     max_train_steps: 3000,
     lora_lr: 1e-4,
+    lr_scheduler: "linear",
+    mask_target_prompts: "photo of a man",
   };
 
   try {
