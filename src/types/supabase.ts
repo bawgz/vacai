@@ -86,50 +86,6 @@ export type Database = {
           },
         ];
       };
-      photos_old: {
-        Row: {
-          created_at: string;
-          id: string;
-          input: Json;
-          model_id: string;
-          replicate_id: string;
-          status: string;
-          updated_at: string | null;
-          url: string | null;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          id: string;
-          input: Json;
-          model_id: string;
-          replicate_id: string;
-          status?: string;
-          updated_at?: string | null;
-          url?: string | null;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          input?: Json;
-          model_id?: string;
-          replicate_id?: string;
-          status?: string;
-          updated_at?: string | null;
-          url?: string | null;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "photos_models_fk";
-            columns: ["model_id"];
-            isOneToOne: false;
-            referencedRelation: "models";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       predictions: {
         Row: {
           created_at: string;
@@ -139,7 +95,6 @@ export type Database = {
           replicate_id: string;
           status: string;
           updated_at: string | null;
-          url: string | null;
           user_id: string;
         };
         Insert: {
@@ -150,7 +105,6 @@ export type Database = {
           replicate_id: string;
           status?: string;
           updated_at?: string | null;
-          url?: string | null;
           user_id: string;
         };
         Update: {
@@ -161,7 +115,6 @@ export type Database = {
           replicate_id?: string;
           status?: string;
           updated_at?: string | null;
-          url?: string | null;
           user_id?: string;
         };
         Relationships: [
