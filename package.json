@@ -12,7 +12,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "**/*": "eslint --fix --quiet"
+    "*.{js,jsx,ts,tsx,json,css,md}": "eslint --fix --quiet"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",

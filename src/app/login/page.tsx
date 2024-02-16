@@ -7,13 +7,13 @@ export default function LoginPage() {
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+          className="flex items-center mb-6 text-4xl font-semibold text-gray-900 dark:text-white"
         >
           <Image
-            className="mr-2"
+            className="mr-2 rounded-full"
             src="/logo.png"
-            width={40}
-            height={40}
+            width={50}
+            height={50}
             alt="logo"
           />
           Vacai
